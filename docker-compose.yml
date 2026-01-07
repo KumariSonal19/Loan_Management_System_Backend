@@ -6,14 +6,14 @@ services:
     image: mysql:8.0
     container_name: mysql
     ports:
-      - "3307:3306" 
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: loan_management_system
       MYSQL_USER: loan_user
       MYSQL_PASSWORD: loan_pass
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
     networks:
       - lms-net
@@ -50,7 +50,7 @@ services:
       - lms-net
 
   api-gateway:
-    build: ./api-gateway  
+    build: ./api-gateway
     container_name: api-gateway
     ports:
       - "8087:8087"
@@ -74,7 +74,7 @@ services:
       - config-server
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/auth_db
     networks:
       - lms-net
 
@@ -89,7 +89,7 @@ services:
       - eureka-server
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_db
     networks:
       - lms-net
 
@@ -97,13 +97,13 @@ services:
     build: ./emi-service
     container_name: emi-service
     ports:
-      - "8084:8084" 
+      - "8084:8084"
     depends_on:
       - mysql
       - eureka-server
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/emi_db
     networks:
       - lms-net
 
@@ -111,13 +111,13 @@ services:
     build: ./admin-service
     container_name: admin-service
     ports:
-      - "8083:8083" 
+      - "8083:8083"
     depends_on:
       - mysql
       - eureka-server
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/admin_db
     networks:
       - lms-net
 
@@ -129,8 +129,10 @@ services:
     depends_on:
       - rabbitmq
       - eureka-server
+      - mysql
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notification_db
     networks:
       - lms-net
 
