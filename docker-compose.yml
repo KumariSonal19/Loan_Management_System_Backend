@@ -1,15 +1,15 @@
 version: '3.8'
 
 services:
-  # --- INFRASTRUCTURE ---
+  
   mysql:
     image: mysql:8.0
     container_name: mysql
     ports:
-      - "3307:3306" # External: 3307, Internal: 3306
+      - "3307:3306" 
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: loan_management_system # Check if this matches your DB name
+      MYSQL_DATABASE: loan_management_system
       MYSQL_USER: loan_user
       MYSQL_PASSWORD: loan_pass
     volumes:
@@ -50,7 +50,7 @@ services:
       - lms-net
 
   api-gateway:
-    build: ./api-gateway  # <--- ADDED THIS
+    build: ./api-gateway  
     container_name: api-gateway
     ports:
       - "8087:8087"
@@ -63,13 +63,11 @@ services:
     networks:
       - lms-net
 
-  # --- MICROSERVICES ---
-  
   auth-service:
     build: ./auth-service
     container_name: auth-service
     ports:
-      - "8081:8081" # Confirmed 8081 is standard for Auth
+      - "8081:8081"
     depends_on:
       - mysql
       - eureka-server
@@ -99,7 +97,7 @@ services:
     build: ./emi-service
     container_name: emi-service
     ports:
-      - "8084:8084" # Use the port from your application.properties
+      - "8084:8084" 
     depends_on:
       - mysql
       - eureka-server
@@ -113,7 +111,7 @@ services:
     build: ./admin-service
     container_name: admin-service
     ports:
-      - "8083:8083" # Check your port!
+      - "8083:8083" 
     depends_on:
       - mysql
       - eureka-server
