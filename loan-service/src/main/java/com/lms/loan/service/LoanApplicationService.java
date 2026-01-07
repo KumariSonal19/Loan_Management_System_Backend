@@ -1,14 +1,15 @@
 package com.lms.loan.service;
 
+import com.lms.loan.client.AdminClient; 
 import com.lms.loan.client.EmiClient;
 import com.lms.loan.client.NotificationClient;
+import com.lms.loan.client.UserClient;
 import com.lms.loan.dto.LoanApplicationDTO;
 import com.lms.loan.dto.LoanApprovalRequestDTO;
+import com.lms.loan.dto.LoanTypeDTO; 
 import com.lms.loan.entity.LoanApplication;
 import com.lms.loan.entity.LoanStatus;
-import com.lms.loan.entity.LoanType;
 import com.lms.loan.repository.LoanApplicationRepository;
-import com.lms.loan.repository.LoanTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,17 +31,24 @@ public class LoanApplicationService {
     private LoanApplicationRepository loanApplicationRepository;
 
     @Autowired
-    private LoanTypeRepository loanTypeRepository;
+    private AdminClient adminClient; 
 
     @Autowired(required = false)
     private NotificationClient notificationClient;
     
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private UserClient userClient;
 
     public LoanApplicationDTO applyLoan(Long customerId, LoanApplicationDTO dto) {
-        LoanType loanType = loanTypeRepository.findById(dto.getLoanTypeId())
-                .orElseThrow(() -> new RuntimeException("Loan type not found"));
+        
+        LoanTypeDTO loanType = adminClient.getLoanTypeById(dto.getLoanTypeId());
+
+        if (loanType == null) {
+             throw new RuntimeException("Loan type not found");
+        }
 
         if (dto.getLoanAmount().compareTo(loanType.getMinAmount()) < 0) {
             throw new RuntimeException("Loan amount is below minimum: " + loanType.getMinAmount());
@@ -55,24 +63,27 @@ public class LoanApplicationService {
 
         LoanApplication loanApplication = new LoanApplication();
         loanApplication.setCustomerId(customerId);
-        loanApplication.setLoanType(loanType);
+        loanApplication.setLoanTypeId(loanType.getId()); 
         loanApplication.setLoanAmount(dto.getLoanAmount());
         loanApplication.setTenure(dto.getTenure());
         loanApplication.setAnnualIncome(dto.getAnnualIncome());
         loanApplication.setEmploymentScore(dto.getEmploymentScore());
         loanApplication.setStatus(LoanStatus.APPLIED);
         loanApplication.setAppliedDate(LocalDateTime.now());
-
+        
         LoanApplication savedLoan = loanApplicationRepository.save(loanApplication);
         log.info("Loan application created - ID: {}, Customer: {}", savedLoan.getId(), customerId);
-
+        
+        String userEmail = getUserEmail(customerId);
         notificationService.sendNotification(
             customerId,
             savedLoan.getId(),
+            userEmail, 
             "LOAN_APPLIED", 
             "Loan Received",
             "Your loan application has been received."
         );
+
         return mapToDTO(savedLoan);
     }
 
@@ -88,6 +99,8 @@ public class LoanApplicationService {
         }
 
         log.info("Processing status update for Loan ID: {} to {}", loan.getId(), newStatus);
+
+        String userEmail = getUserEmail(loan.getCustomerId());
 
         switch (newStatus) {
             case UNDER_REVIEW:
@@ -124,14 +137,13 @@ public class LoanApplicationService {
                     log.info("EMI Generation triggered for Loan ID: {}", loan.getId());
                 } catch (Exception e) {
                     log.error("CRITICAL: Loan approved but EMI generation failed: {}", e.getMessage());
-                  
                 }
-                
-                String notifType = "LOAN_" + request.getStatus(); 
 
+                String notifType = "LOAN_" + request.getStatus();
                 notificationService.sendNotification(
                     loan.getCustomerId(),
                     loan.getId(),
+                    userEmail, 
                     notifType,
                     "Loan Status Update",
                     "Your loan is now " + request.getStatus()
@@ -147,7 +159,14 @@ public class LoanApplicationService {
                 loan.setApprovedBy(officerId);
                 loan.setApprovalDate(LocalDateTime.now());
 
-                
+                notificationService.sendNotification(
+                    loan.getCustomerId(),
+                    loan.getId(),
+                    userEmail, 
+                    "LOAN_REJECTED",
+                    "Loan Application Rejected",
+                    "Your loan application has been rejected. Remarks: " + request.getRemarks()
+                );
                 break;
 
             default:
@@ -186,23 +205,35 @@ public class LoanApplicationService {
         loanApplicationRepository.save(loan);
 
         log.info("Loan closed - ID: {}", loanId);
-        sendNotification(loan.getCustomerId(), "LOAN_CLOSED", "Your loan has been completely repaid", loan.getId());
+        sendNotificationViaFeign(loan.getCustomerId(), "LOAN_CLOSED", "Your loan has been completely repaid", loan.getId());
     }
 
-    private void sendNotification(Long customerId, String type, String message, Long loanId) {
+    private void sendNotificationViaFeign(Long customerId, String type, String message, Long loanId) {
         if (notificationClient != null) {
             try {
                 notificationClient.sendLoanNotification(customerId, type, message, loanId);
             } catch (Exception e) {
-                log.warn("Could not send notification: {}", e.getMessage());
+                log.warn("Could not send notification via Feign: {}", e.getMessage());
             }
         }
+    }
+
+    private String getUserEmail(Long customerId) {
+        try {
+            com.lms.loan.dto.UserDTO user = userClient.getUserById(customerId);
+            if (user != null && user.getEmail() != null) {
+                return user.getEmail();
+            }
+        } catch (Exception e) {
+            log.error("Failed to fetch email for user {}: {}", customerId, e.getMessage());
+        }
+        return "sonalkumari6688@gmail.com"; 
     }
 
     private LoanApplicationDTO mapToDTO(LoanApplication loan) {
         LoanApplicationDTO dto = new LoanApplicationDTO();
         dto.setId(loan.getId());
-        dto.setLoanTypeId(loan.getLoanType().getId());
+        dto.setLoanTypeId(loan.getLoanTypeId()); 
         dto.setLoanAmount(loan.getLoanAmount());
         dto.setTenure(loan.getTenure());
         dto.setAnnualIncome(loan.getAnnualIncome());
@@ -216,6 +247,11 @@ public class LoanApplicationService {
         dto.setClosedDate(loan.getClosedDate());
         return dto;
     }
-    
-    
+
+    public List<LoanApplicationDTO> getAllLoans() {
+        return loanApplicationRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
 }
