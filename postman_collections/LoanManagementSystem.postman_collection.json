@@ -1,0 +1,919 @@
+{
+	"info": {
+		"_postman_id": "e6e6c0e9-6cf4-42e3-bd46-1a3658d3a8f8",
+		"name": "LoanManagementSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49490521",
+		"_collection_link": "https://aviation-specialist-45763464-3946963.postman.co/workspace/SONAL-KUMARI_3114's-Workspace~7542d4c7-6130-4c30-8b25-fc0e7b47eb06/collection/49490521-e6e6c0e9-6cf4-42e3-bd46-1a3658d3a8f8?action=share&source=collection_link&creator=49490521"
+	},
+	"item": [
+		{
+			"name": "Auth-service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/auth/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"auth",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9MT0FOX09GRklDRVIiLCJmdWxsTmFtZSI6IkxvYW4gT2ZmaWNlciIsInVzZXJJZCI6NiwiZW1haWwiOiJsb2Fub2ZmaWNlcjFAZXhhbXBsZS5jb20iLCJzdWIiOiJsb2Fub2ZmaWNlcjEiLCJpYXQiOjE3NjczMjI2MzEsImV4cCI6MTc2NzQwOTAzMX0.mGj3zx_WI45qaNTS04LlP6uea7yz9uNAGfr-oXgKq0nD6Fv9ohFK6w5ReP2_bwsX0a9_ULy6s0kfOgxAXMBaXQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"loanofficer3\",\r\n  \"email\": \"loanofficer3@example.com\",\r\n  \"password\": \"MyPassword123!\",\r\n  \"fullName\": \"Loan Officer\",\r\n  \"phoneNumber\": \"9876543210\",\r\n  \"role\": \"LOAN_OFFICER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"testuser1\",\r\n  \"password\": \"MyPassword123!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user profile by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/auth/profile/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"auth",
+								"profile",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"john_doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"fullName\": \"John Doe Updated\",\r\n  \"password\": \"MyPassword123!\",\r\n  \"phoneNumber\": \"9876543211\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/auth/profile/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"auth",
+								"profile",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin-service",
+			"item": [
+				{
+					"name": "healthcheck",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsImZ1bGxOYW1lIjoiQWRtaW4iLCJ1c2VySWQiOjQsImVtYWlsIjoiYWRtaW4xMUBleGFtcGxlLmNvbSIsInN1YiI6ImFkbWluMSIsImlhdCI6MTc2NzI4OTYwNCwiZXhwIjoxNzY3Mzc2MDA0fQ.koGTkkWFAodnxkk7G9RkqG25x8p8GNFEOWWg5NKMPeO3taFYkIuMWvKsEnEnr0PPft-J5ZNp2XWPfSq02k5-rg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/admin/loan-types/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"admin",
+								"loan-types",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new loan type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"typeName\": \"Home Loan\",\r\n  \"minAmount\": 100000,\r\n  \"maxAmount\": 5000000,\r\n  \"baseInterestRate\": 8.5,\r\n  \"minTenure\": 12,\r\n  \"maxTenure\": 240,\r\n  \"description\": \"Loan for residential property purchase\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all loan types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get loan type by id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get loan type by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/admin/loan-types/name/Home%20Loan",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"admin",
+								"loan-types",
+								"name",
+								"Home%20Loan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update loan details",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"typeName\": \"Home Loan Updated\",\r\n  \"minAmount\": 150000,\r\n  \"maxAmount\": 6000000,\r\n  \"baseInterestRate\": 8.2,\r\n  \"minTenure\": 12,\r\n  \"maxTenure\": 300,\r\n  \"description\": \"Updated home loan details\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate loan",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types/1/deactivate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types",
+								"1",
+								"deactivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate loan type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types/1/activate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types",
+								"1",
+								"activate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete loan type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/admin/loan-types/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"loan-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "loan-service",
+			"item": [
+				{
+					"name": "Apply loans",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"loanTypeId\": 3,\r\n  \"loanAmount\": 250000,\r\n  \"tenure\": 120,\r\n  \"annualIncome\": 900000,\r\n  \"employmentScore\": 85\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/v1/loans/apply",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"v1",
+								"loans",
+								"apply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review by loan officer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzM0Mzg4MywiZXhwIjoxNzY3NDMwMjgzfQ.CfgjP0s-XDNR6zC4-4VMzFrn5rTC05PkxHLTZRq3kx2lUCO8Q6639yoEfNLpJJt0p00Kg2JGlBNaYWH5XrR2hg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "99",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"loanId\": 5,\r\n  \"status\": \"UNDER_REVIEW\",\r\n  \"remarks\": \"Checking income documents.\"\r\n}\r\n{\r\n  \"loanId\": 1,\r\n  \"status\": \"APPROVED\",\r\n  \"approvedAmount\": 500000.00,\r\n  \"interestRate\": 8.5,\r\n  \"remarks\": \"Documents verified, loan approved.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/loans/review",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Loan details for a loanID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzQxNDMyNSwiZXhwIjoxNzY3NTAwNzI1fQ.qFnH7bjGgJiHSjn_QMMnyUYVMIfKA6CxjnhVlMVFrPqT-qzX6746DXWrV7g1CfxY3QrljWBCpNfZhpWpA2YDaQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/loans/15",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get customers loan history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzMyMjczNywiZXhwIjoxNzY3NDA5MTM3fQ.XbnLwzYSM7Iyh7Z8ushij9SZpnDZTKKFQV9Sn3sVbZsuXF8AnrkIdGmiwLdoZktLWnwcKKKxXHX5WkK0AxCdRQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/loans/customer/list/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"customer",
+								"list",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get loan by status for officer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9MT0FOX09GRklDRVIiLCJmdWxsTmFtZSI6IkxvYW4gT2ZmaWNlciIsInVzZXJJZCI6NiwiZW1haWwiOiJsb2Fub2ZmaWNlcjFAZXhhbXBsZS5jb20iLCJzdWIiOiJsb2Fub2ZmaWNlcjEiLCJpYXQiOjE3NjczMjI2MzEsImV4cCI6MTc2NzQwOTAzMX0.mGj3zx_WI45qaNTS04LlP6uea7yz9uNAGfr-oXgKq0nD6Fv9ohFK6w5ReP2_bwsX0a9_ULy6s0kfOgxAXMBaXQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/loans/status/UNDER_REVIEW",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"status",
+								"UNDER_REVIEW"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get loan count by status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzMyMjczNywiZXhwIjoxNzY3NDA5MTM3fQ.XbnLwzYSM7Iyh7Z8ushij9SZpnDZTKKFQV9Sn3sVbZsuXF8AnrkIdGmiwLdoZktLWnwcKKKxXHX5WkK0AxCdRQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/loans/count/APPLIED",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"count",
+								"APPLIED"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsImZ1bGxOYW1lIjoiQWRtaW4iLCJ1c2VySWQiOjExLCJlbWFpbCI6ImFkbWluM0BleGFtcGxlLmNvbSIsInN1YiI6ImFkbWluMyIsImlhdCI6MTc2NzU5NjM4MywiZXhwIjoxNzY3NjgyNzgzfQ.tJdexT8UwgRJCPqXmOQj_BlKSfoOIljFGgaIW6qtLyLLgb9QZwvddPI0NxGH9tyMgVUkmUydknj-nszraMVMkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/loans/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"loans",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "emi-service",
+			"item": [
+				{
+					"name": "Generate EMI Schedule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzMyMjczNywiZXhwIjoxNzY3NDA5MTM3fQ.XbnLwzYSM7Iyh7Z8ushij9SZpnDZTKKFQV9Sn3sVbZsuXF8AnrkIdGmiwLdoZktLWnwcKKKxXHX5WkK0AxCdRQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"loanApplicationId\": 3,\r\n  \"principal\": 500000,\r\n  \"annualRate\": 8.5,\r\n  \"months\": 60\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8087/api/emis/generate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"emis",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get EMI schedule by loan ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/v1/emis/schedule/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"emis",
+								"schedule",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Record EMI payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"emiScheduleId\": 1,\r\n  \"amountPaid\": 10236.12,\r\n  \"paymentMode\": \"ONLINE\",\r\n  \"transactionId\": \"TXN123456\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/api/v1/emis/repay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"v1",
+								"emis",
+								"repay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get outstanding balance",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get overdue emis",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjMsImVtYWlsIjoidGVzdHVzZXIxMUBleGFtcGxlLmNvbSIsInN1YiI6InRlc3R1c2VyMSIsImlhdCI6MTc2NzMyMjczNywiZXhwIjoxNzY3NDA5MTM3fQ.XbnLwzYSM7Iyh7Z8ushij9SZpnDZTKKFQV9Sn3sVbZsuXF8AnrkIdGmiwLdoZktLWnwcKKKxXHX5WkK0AxCdRQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/emis/overdue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"emis",
+								"overdue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification-service",
+			"item": [
+				{
+					"name": "Get Notifications by userId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiU29uYWwgS3VtYXJpIiwidXNlcklkIjo5LCJlbWFpbCI6IjIyMDUzMTE0QGtpaXQuYWMuaW4iLCJzdWIiOiJzb25hbGt1bWFyaSIsImlhdCI6MTc2NzQyMzYxMSwiZXhwIjoxNzY3NTEwMDExfQ.H8n3uEM1NWmJCYsfJU3hg6-RjNwzkhLLE53UPaKFagLKZfoIejl0Txw4c1BHwFMdKu4u5XQR9TUGTfqDHYL65A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/notifications/user/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"notifications",
+								"user",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get unread notifications for given userId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiU29uYWwgS3VtYXJpIiwidXNlcklkIjo5LCJlbWFpbCI6IjIyMDUzMTE0QGtpaXQuYWMuaW4iLCJzdWIiOiJzb25hbGt1bWFyaSIsImlhdCI6MTc2NzQyMzYxMSwiZXhwIjoxNzY3NTEwMDExfQ.H8n3uEM1NWmJCYsfJU3hg6-RjNwzkhLLE53UPaKFagLKZfoIejl0Txw4c1BHwFMdKu4u5XQR9TUGTfqDHYL65A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/notifications/user/9/unread",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"notifications",
+								"user",
+								"9",
+								"unread"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update read status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiUk9MRV9DVVNUT01FUiIsImZ1bGxOYW1lIjoiU29uYWwgS3VtYXJpIiwidXNlcklkIjo5LCJlbWFpbCI6IjIyMDUzMTE0QGtpaXQuYWMuaW4iLCJzdWIiOiJzb25hbGt1bWFyaSIsImlhdCI6MTc2NzQyMzYxMSwiZXhwIjoxNzY3NTEwMDExfQ.H8n3uEM1NWmJCYsfJU3hg6-RjNwzkhLLE53UPaKFagLKZfoIejl0Txw4c1BHwFMdKu4u5XQR9TUGTfqDHYL65A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8087/api/notifications/10/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"api",
+								"notifications",
+								"10",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
