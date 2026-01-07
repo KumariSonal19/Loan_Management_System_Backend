@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  # --- INFRASTRUCTURE ---
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3307:3306" # External: 3307, Internal: 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: loan_management_system # Check if this matches your DB name
+      MYSQL_USER: loan_user
+      MYSQL_PASSWORD: loan_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - lms-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - lms-net
+
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - lms-net
+
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - lms-net
+
+  api-gateway:
+    build: ./api-gateway  # <--- ADDED THIS
+    container_name: api-gateway
+    ports:
+      - "8087:8087"
+    depends_on:
+      - eureka-server
+      - auth-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - lms-net
+
+  # --- MICROSERVICES ---
+  
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081" # Confirmed 8081 is standard for Auth
+    depends_on:
+      - mysql
+      - eureka-server
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+    networks:
+      - lms-net
+
+  loan-service:
+    build: ./loan-service
+    container_name: loan-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+      - rabbitmq
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+    networks:
+      - lms-net
+
+  emi-service:
+    build: ./emi-service
+    container_name: emi-service
+    ports:
+      - "8084:8084" # Use the port from your application.properties
+    depends_on:
+      - mysql
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+    networks:
+      - lms-net
+
+  admin-service:
+    build: ./admin-service
+    container_name: admin-service
+    ports:
+      - "8083:8083" # Check your port!
+    depends_on:
+      - mysql
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/loan_management_system
+    networks:
+      - lms-net
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - rabbitmq
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - lms-net
+
+volumes:
+  mysql_data:
+
+networks:
+  lms-net:
+    driver: bridge
