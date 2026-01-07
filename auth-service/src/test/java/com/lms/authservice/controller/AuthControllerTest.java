@@ -1,36 +1,33 @@
 package com.lms.authservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lms.authservice.dto.LoginRequestDTO;
-import com.lms.authservice.dto.LoginResponseDTO;
-import com.lms.authservice.dto.RegisterRequestDTO;
-import com.lms.authservice.dto.UserProfileDTO;
+import com.lms.authservice.dto.*;
+import com.lms.authservice.exception.GlobalExceptionHandler;
 import com.lms.authservice.filter.JwtAuthenticationFilter;
 import com.lms.authservice.service.AuthService;
 import com.lms.authservice.util.JwtTokenProvider;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.ArgumentMatchers.anyLong; 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
 class AuthControllerTest {
 
     @Autowired
@@ -46,74 +43,65 @@ class AuthControllerTest {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @MockBean
-    private UserDetailsService userDetailsService;
-
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-
-    @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
-    private RegisterRequestDTO registerRequest;
-    private LoginRequestDTO loginRequest;
-    private LoginResponseDTO loginResponse;
-    private UserProfileDTO userProfile;
-
-    @BeforeEach
-    void setUp() throws Exception {
-    	doAnswer(invocation -> {
-            HttpServletRequest request = invocation.getArgument(0);
-            HttpServletResponse response = invocation.getArgument(1);
-            FilterChain chain = invocation.getArgument(2);
-            chain.doFilter(request, response);
-            return null;
-        }).when(jwtAuthenticationFilter).doFilter(any(), any(), any());
-
-        registerRequest = new RegisterRequestDTO();
-        registerRequest.setUsername("testuser");
-        registerRequest.setPassword("Password123");
-        registerRequest.setEmail("test@test.com");
-        registerRequest.setFullName("Test User");
-        registerRequest.setRole("CUSTOMER");
-        registerRequest.setPhoneNumber("9876543210");
-
-        loginRequest = new LoginRequestDTO();
-        loginRequest.setUsername("testuser");
-        loginRequest.setPassword("Password@123");
-
-        loginResponse = LoginResponseDTO.builder()
-                .accessToken("mock-jwt-token")
-                .username("testuser")
-                .build();
-
-        userProfile = UserProfileDTO.builder()
-                .userId(1L)
-                .username("testuser")
-                .email("test@test.com")
-                .build();
-    }
-
     @Test
-    @WithMockUser
-    void login_ShouldReturnToken() throws Exception {
-        when(authService.login(any(LoginRequestDTO.class))).thenReturn(loginResponse);
+    void login_success() throws Exception {
+        when(authService.login(any()))
+                .thenReturn(LoginResponseDTO.builder().accessToken("token").build());
 
         mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
+                        .content("""
+                            {"username":"user","password":"pass"}
+                        """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value("mock-jwt-token"));
+                .andExpect(jsonPath("$.accessToken").value("token"));
     }
 
     @Test
-    @WithMockUser
-    void getUserProfile_ShouldReturnProfile() throws Exception {
-        when(authService.getUserProfile(1L)).thenReturn(userProfile);
+    void register_success() throws Exception {
+        when(authService.register(any())).thenReturn(null);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "username":"test",
+                              "password":"Password@123",
+                              "email":"test@test.com",
+                              "fullName":"Test User"
+                            }
+                        """))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("User registered successfully"));
+    }
+
+    @Test
+    void register_validation_fail() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getProfile_success() throws Exception {
+        when(authService.getUserProfile(1L))
+                .thenReturn(UserProfileDTO.builder()
+                        .username("testuser")
+                        .email("test@test.com")
+                        .build());
 
         mockMvc.perform(get("/api/auth/profile/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@test.com"));
+                .andExpect(jsonPath("$.username").value("testuser"));
     }
 
+    @Test
+    void health_check() throws Exception {
+        mockMvc.perform(get("/api/auth/health"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Auth Service is running"));
+    }
 }
