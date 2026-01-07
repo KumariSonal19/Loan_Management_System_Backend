@@ -76,7 +76,7 @@ Where:
 
 ---
 ## Folder Stucture
-
+```text
 loan-management-system/
 │
 ├── admin-service/
@@ -239,7 +239,7 @@ loan-management-system/
 │
 ├── README.md
 └── pom.xml                     (parent / aggregator POM)
-
+```
 ---
 
 ## API Endpoints
