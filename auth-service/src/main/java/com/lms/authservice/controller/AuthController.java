@@ -15,13 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     private final AuthService authService;
@@ -63,4 +63,16 @@ public class AuthController {
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth Service is running");
     }
+    
+ @GetMapping("/users")
+ public ResponseEntity<List<UserProfileDTO>> getAllUsers() {
+     return ResponseEntity.ok(authService.getAllUsers());
+ }
+
+ @PutMapping("/users/{id}/status")
+ public ResponseEntity<UserProfileDTO> toggleUserStatus(
+         @PathVariable Long id, 
+         @RequestParam Boolean active) {
+     return ResponseEntity.ok(authService.toggleUserStatus(id, active));
+ }
 }

@@ -7,6 +7,10 @@ import com.lms.authservice.exception.*;
 import com.lms.authservice.repository.UserRepository;
 import com.lms.authservice.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,4 +107,28 @@ public class AuthService {
             throw new DuplicateUserException("Email already exists");
         }
     }
+    
+ public List<UserProfileDTO> getAllUsers() {
+     return userRepository.findAll().stream()
+             .map(user -> UserProfileDTO.builder()
+                     .userId(user.getId())
+                     .username(user.getUsername())
+                     .email(user.getEmail())
+                     .fullName(user.getFullName())
+                     .phoneNumber(user.getPhoneNumber())
+                     .role(user.getRole().name())
+                     .active(user.getIsActive())
+                     .build())
+             .collect(Collectors.toList());
+ }
+
+ public UserProfileDTO toggleUserStatus(Long userId, Boolean isActive) {
+     User user = userRepository.findById(userId)
+             .orElseThrow(() -> new UserNotFoundException("User not found"));
+     
+     user.setIsActive(isActive);
+     userRepository.save(user);
+     
+     return getUserProfile(userId); 
+ }
 }
