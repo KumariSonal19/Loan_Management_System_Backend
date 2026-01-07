@@ -75,6 +75,172 @@ Where:
 - N is the loan tenure in months
 
 ---
+## Folder Stucture
+```text
+loan-management-system/
+│
+├── admin-service/
+│   ├── src/main/java/com/lms/admin/
+│   │   ├── AdminServiceApplication.java
+│   │   ├── controller/
+│   │   │   └── LoanTypeController.java
+│   │   ├── dto/
+│   │   │   └── LoanTypeDTO.java
+│   │   ├── entity/
+│   │   │   └── LoanType.java
+│   │   ├── exception/
+│   │   │   ├── GlobalExceptionHandler.java
+│   │   │   └── ResourceNotFoundException.java
+│   │   ├── repository/
+│   │   │   └── LoanTypeRepository.java
+│   │   └── service/
+│   │       └── LoanTypeService.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── auth-service/
+│   ├── src/main/java/com/lms/authservice/
+│   │   ├── AuthServiceApplication.java
+│   │   ├── config/
+│   │   │   └── SecurityConfig.java
+│   │   ├── controller/
+│   │   │   └── AuthController.java
+│   │   ├── dto/
+│   │   │   ├── LoginRequestDTO.java
+│   │   │   ├── LoginResponseDTO.java
+│   │   │   ├── RegisterRequestDTO.java
+│   │   │   └── UserProfileDTO.java
+│   │   ├── entity/
+│   │   │   ├── User.java
+│   │   │   └── Role.java
+│   │   ├── exception/
+│   │   │   ├── GlobalExceptionHandler.java
+│   │   │   ├── UserNotFoundException.java
+│   │   │   ├── DuplicateUserException.java
+│   │   │   └── InvalidCredentialsException.java
+│   │   ├── filter/
+│   │   │   └── JwtAuthenticationFilter.java
+│   │   ├── repository/
+│   │   │   └── UserRepository.java
+│   │   ├── service/
+│   │   │   └── AuthService.java
+│   │   └── util/
+│   │       └── JwtTokenProvider.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── loan-service/
+│   ├── src/main/java/com/lms/loan/
+│   │   ├── LoanServiceApplication.java
+│   │   ├── client/
+│   │   │   ├── EmiClient.java
+│   │   │   ├── NotificationClient.java
+│   │   │   └── UserClient.java
+│   │   ├── config/
+│   │   │   └── NotificationConfig.java
+│   │   ├── controller/
+│   │   │   └── LoanApplicationController.java
+│   │   ├── dto/
+│   │   │   ├── LoanApplicationDTO.java
+│   │   │   ├── LoanApprovalRequestDTO.java
+│   │   │   ├── NotificationDTO.java
+│   │   │   └── UserDTO.java
+│   │   ├── entity/
+│   │   │   ├── LoanApplication.java
+│   │   │   ├── LoanStatus.java
+│   │   │   └── LoanType.java
+│   │   ├── exception/
+│   │   │   └── GlobalExceptionHandler.java
+│   │   ├── repository/
+│   │   │   ├── LoanApplicationRepository.java
+│   │   │   └── LoanTypeRepository.java
+│   │   ├── service/
+│   │   │   ├── LoanApplicationService.java
+│   │   │   ├── EMICalculationService.java
+│   │   │   └── NotificationService.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── emi-service/
+│   ├── src/main/java/com/lms/emi/
+│   │   ├── EmiServiceApplication.java
+│   │   ├── controller/
+│   │   │   └── EMIController.java
+│   │   ├── dto/
+│   │   │   ├── EMIGenerationRequest.java
+│   │   │   ├── EMIScheduleDTO.java
+│   │   │   ├── PaymentRequestDTO.java
+│   │   │   └── RepaymentDTO.java
+│   │   ├── entity/
+│   │   │   ├── EMISchedule.java
+│   │   │   ├── EMIStatus.java
+│   │   │   ├── PaymentMode.java
+│   │   │   └── Repayment.java
+│   │   ├── exception/
+│   │   │   └── GlobalExceptionHandler.java
+│   │   ├── repository/
+│   │   │   ├── EMIScheduleRepository.java
+│   │   │   └── RepaymentRepository.java
+│   │   └── service/
+│   │       └── EMIService.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── notification-service/
+│   ├── src/main/java/com/lms/notificationservice/
+│   │   ├── NotificationServiceApplication.java
+│   │   ├── config/
+│   │   │   └── NotificationConfig.java
+│   │   ├── controller/
+│   │   │   └── NotificationController.java
+│   │   ├── dto/
+│   │   │   ├── NotificationDTO.java
+│   │   │   └── NotificationEventDTO.java
+│   │   ├── entity/
+│   │   │   ├── Notification.java
+│   │   │   ├── NotificationChannel.java
+│   │   │   └── NotificationType.java
+│   │   ├── event/
+│   │   │   └── NotificationEvent.java
+│   │   ├── rabbitmq/
+│   │   │   └── NotificationListener.java
+│   │   ├── repository/
+│   │   │   └── NotificationRepository.java
+│   │   └── service/
+│   │       ├── NotificationService.java
+│   │       ├── EmailService.java
+│   │       └── SmsService.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── api-gateway/
+│   ├── src/main/java/com/lms/apigateway/
+│   │   ├── ApiGatewayApplication.java
+│   │   ├── config/
+│   │   │   ├── GatewayConfig.java
+│   │   │   └── GlobalCorsConfig.java
+│   │   ├── filter/
+│   │   │   ├── JwtAuthenticationFilter.java
+│   │   │   └── RouteValidator.java
+│   │   └── util/
+│   │       └── JwtTokenProvider.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── eureka-server/             
+│   ├── src/main/java/
+│   └── pom.xml
+│
+├── README.md
+└── pom.xml                     (parent / aggregator POM)
+```
+---
 
 ## API Endpoints
 
