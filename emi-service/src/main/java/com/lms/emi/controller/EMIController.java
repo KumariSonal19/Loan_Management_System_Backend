@@ -23,7 +23,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/emis")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
 public class EMIController {
 
     @Autowired
@@ -96,9 +95,7 @@ public class EMIController {
         );
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "SUCCESS");
         response.put("message", "Payment of " + request.getAmountPaid() + " received successfully!");
-        response.put("data", responseDTO);
         return ResponseEntity.ok(response);
     }
 
@@ -118,5 +115,16 @@ public class EMIController {
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("EMI Service is running");
+    }
+    
+ 
+    @PostMapping("/total-outstanding-batch")
+    public ResponseEntity<BigDecimal> getTotalOutstandingByLoanIds(@RequestBody List<Long> loanIds) {
+        if (loanIds == null || loanIds.isEmpty()) {
+            return ResponseEntity.ok(BigDecimal.ZERO);
+        }
+        
+        BigDecimal total = emiScheduleRepository.sumPendingAmountByLoanIds(loanIds);
+        return ResponseEntity.ok(total);
     }
 }
