@@ -53,12 +53,12 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             String role = jwtTokenProvider.getRoleFromToken(token);
             log.info("User Role: {}", role);
 
-            if (isAdminRoute(path)) {
-                if (!"ROLE_ADMIN".equals(role)) {
-                    log.warn("Access Denied: Admin role required");
-                    return this.forbidden(exchange);
-                }
-            }
+//            if (isAdminRoute(path)) {
+//                if (!"ROLE_ADMIN".equals(role)) {
+//                    log.warn("Access Denied: Admin role required");
+//                    return this.forbidden(exchange);
+//                }
+//            }
 
             if (isLoanOfficerRoute(path, method)) {
                 if (!"ROLE_ADMIN".equals(role) && !"ROLE_LOAN_OFFICER".equals(role)) {
@@ -78,9 +78,9 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             || path.startsWith("/v3/api-docs");
     }
 
-    private boolean isAdminRoute(String path) {
-        return path.startsWith("/api/admin"); 
-    }
+//    private boolean isAdminRoute(String path) {
+//        return path.startsWith("/api/admin"); 
+//    }
 
     private boolean isLoanOfficerRoute(String path, HttpMethod method) {
         return path.contains("/loans/review") && HttpMethod.PUT.equals(method);
